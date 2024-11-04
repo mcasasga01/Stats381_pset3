@@ -1,6 +1,6 @@
 ### Libraries 
 library(ggplot2)
-library(cowplot) # or library(patchwork)
+library(cowplot) 
 library(tidyverse)
 library(dplyr)
 
@@ -42,24 +42,15 @@ conditional_probs$peduc <- factor(conditional_probs$peduc,
 
 # Calculate Rho by decade
 rho <- gss_clean %>%
-  filter(!is.na(degree) & !is.na(peduc)) 
-
-%>%
-  #group_by(decade) %>%
+  group_by(decade) %>%
   summarize(rho = cor(as.numeric(degree), as.numeric(peduc), method = "spearman", use = "complete.obs")) %>%
   ungroup()
 
-
 overall_rho <- cor(as.numeric(rho$degree), as.numeric(rho$peduc), method = "spearman", use = "pairwise.complete.obs")
-
-rho_by_decade <- gss_clean %>%
-  group_by(decade) %>%
-  summarize(rho = cor(as.numeric(degree), as.numeric(peduc), method = "spearman", use = "pairwise.complete.obs")) %>%
-  ungroup()
 
 ############################## Plotting ########################################
 ################################################################################
-# main plot: conditional probabilities 
+### main plot: conditional probabilities 
 plot_main <- ggplot(conditional_probs, aes(x = degree, y = peduc, fill = probability)) +
   geom_tile() + 
   scale_fill_gradient(low = "yellow", high = "darkblue") +
@@ -73,7 +64,7 @@ plot_main <- ggplot(conditional_probs, aes(x = degree, y = peduc, fill = probabi
   ) +
   scale_x_discrete(position = "top") 
 
-# smaller plot: overall rho
+### smaller plot: overall rho
 plot_overall <- ggplot(conditional_probs, aes(x = degree, y = peduc, fill = probability)) +
   geom_tile() + 
   scale_fill_gradient(low = "yellow", high = "darkblue") +
@@ -93,7 +84,9 @@ plot_overall <- ggplot(conditional_probs, aes(x = degree, y = peduc, fill = prob
     plot.title = element_text(hjust = 0.5)
   )
 
-# Max Equality 
+### Max Equality 
+# Creating fake dataset to plot 
+
 decade <- c(1940, 1950, 1960, 1970, 1980,
             1940, 1950, 1960, 1970, 1980,
             1940, 1950, 1960, 1970, 1980,
@@ -147,7 +140,10 @@ plot_equality <- ggplot(df, aes(x = degree, y = peduc, fill = probability)) +
     plot.title = element_text(hjust = 0.5)
   )
 
-# Max Inequality 
+### Max Inequality 
+# I don't know what I'm supposed to be doing for this one, tbh 
+# Creating fake dataset to plot
+
 decade <- c(1940, 1950, 1960, 1970, 1980,
             1940, 1950, 1960, 1970, 1980,
             1940, 1950, 1960, 1970, 1980,
